@@ -1,8 +1,8 @@
 Module.register("MMM-WiFiPassword", {  
   defaults: {
 	  qrSize: 125,
-	  colorDark: "#fff",
-	  colorLight: "#000",
+	  colorDark: "#000",
+	  colorLight: "#fff",
 	  authType: "WPA", // WEP, WPA, NONE
 	  network: "REQUIRED", // Your Network ID
 	  password: "REQUIRED", // Your Network Password
@@ -57,7 +57,7 @@ Module.register("MMM-WiFiPassword", {
 	  var qrDiv = document.createElement("div");
 	  qrDiv.id = "qrdiv";
 	  qrDiv.className = "qr-image";
-	  qrDiv.style = "width=" + this.config.qrSize + "px";
+	  qrDiv.style = "width:" + this.config.qrSize + "px; background-color:" + this.config.colorLight;
 	  if (this.config.layoutVertical) {
 		qrDiv.className += " layout-vertical";
 	  } else {
@@ -122,8 +122,30 @@ Module.register("MMM-WiFiPassword", {
 		  };
 		  
 		  var qrCode = new QRCode(qrDiv, qrOptions);
-		  
 		  break;
+
+		  case "WIFIPASSWORD_MODAL":
+			var fetchQrCode = document.getElementById("qrdiv").innerHTML;
+			this.sendNotification("OPEN_MODAL", {
+			  template: "WifiPasswordModal.njk",
+			  data: {
+				// Send config as data input to template
+				layoutVertical: this.config.layoutVertical,
+				qrSize: this.config.qrSize,
+				header: this.config.header,
+				colorLight: this.config.colorLight,
+				network: this.config.network,
+				password: this.config.password,
+				authType: this.config.authType,
+				showNetwork: this.config.showNetwork,
+				showPassword: this.config.showPassword,
+				showAuthType: this.config.showAuthType,
+				debug: this.config.debug,
+				// Send actual content
+				content: fetchQrCode,
+			  },
+			});
+			break;
 	  }
   },
   
